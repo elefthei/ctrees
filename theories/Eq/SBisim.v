@@ -693,8 +693,6 @@ The following proof rules avoid this issue in particular cases.
 Be sure to notice that contrary to equations such that [sb_guard] or
 up-to principles such that [upto_vis], (most of) these rules consume a [sb].
 
-TODO: need to think more about this --- do we want more proof rules?
-Do we actually need them on [sb (st R)], or something else?
 |*)
 Section Proof_Rules.
 

@@ -31,25 +31,26 @@ We develop a cousin of Interaction Trees, dubbed _Choice Trees_, with native sup
 
 ## Building instructions
 
-### Installing dependencies
-
-Installing the opam dependencies
-```shell
-opam install coq-ext-lib coq-itree coq-relation-algebra coq-coinduction coq-equations
-```
-
 ### Obtaining the project
 
-```shell
+```sh
 git clone https://github.com/vellvm/ctrees
 cd ctrees
 ```
 
-### Building the project
+### Installing dependencies and building
 
-```shell
-dune build
+From the checkout:
+
+```sh
+opam repository add rocq-released https://rocq-prover.org/opam/released --switch default
+opam install --switch default --working-dir --deps-only .
+opam exec --switch default -- dune build
 ```
+
+Skip the repository-addition command if `rocq-released` is already configured.
+The official `rocq-coinduction.1.22` release provides `Coinduction.all` and the
+tower API used by CTree.
 
 ## Universe checking
 

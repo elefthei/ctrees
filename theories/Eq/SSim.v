@@ -365,8 +365,9 @@ Section bind.
   Qed.
 
 (*|
-Specialization of [bind_ctx] to a function acting with [ssim] on the bound value,
-and with the argument (pointwise) on the continuation.
+[bind_chain_gen] closes each [R : Chain ss] element under bind: prefixes are
+related by [ssim RR], continuations pointwise by [elem R] under [R0], and
+[RR] satisfies [is_update_val_rel].
 |*)
   Lemma bind_chain_gen
     (RR : rel (label E) (label F))

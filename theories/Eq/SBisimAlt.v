@@ -130,17 +130,6 @@ Next Obligation.
   destruct f. cbn. cbn in H0. eapply Hbody in H0. 2: { cbn. apply H. } apply H0.
 Qed.
 
-(* Lemma unary_sym3 {A} (f : A -> A) : compat converse_neg (lift_rel3 (unary_ctx f)). *)
-(* Proof. *)
-(*   intros R b. apply leq_unary_ctx. *)
-(*   intros. now apply in_unary_ctx. *)
-(* Qed. *)
-
-(* Lemma binary_sym3 {A} (f : A -> A -> A) : compat converse_neg (lift_rel3 (binary_ctx f)). *)
-(* Proof. *)
-(*   intros R b. apply leq_binary_ctx. *)
-(*   intros. now apply in_binary_ctx. *)
-(* Qed. *)
 
 Section sbisim'_theory.
   Arguments label: clear implicits.

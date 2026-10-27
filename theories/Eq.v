@@ -68,13 +68,12 @@ The upto [Vis] context principle for [sbisim]
 (* #[global] Tactic Notation "upto_vis" := __upto_vis_sbisim. *)
 
 (*|
-The upto [bind] context principle for [equ] and [sbisim] ---
-the same tactic covers both cases, whether in front of a [gfp], [t _] or [bt _].
+The upto [bind] context principle for [equ] and [sbisim]. The same tactic
+supports greatest-fixpoint goals, chain elements, and their successor bodies.
 The three variants are:
-- [upto_bind]: leave you with both proof obligations, introducing an evar for the intermediate relation in the case of [equ]
-- [upto_bind_eq]: meant to be use when the prefixes of the computations
-are identical: assumes [reflexivity] will solve the first goal, and proceed to substitute the equality
-- [upto_bind with SS]: for [equ], provides explicitly the intermediate relation
+- [upto_bind]: leaves both proof obligations, introducing an evar for the intermediate relation in the case of [equ]
+- [upto_bind_eq]: is meant for identical computation prefixes; [reflexivity] solves the first goal before substitution
+- [upto_bind with SS]: for [equ], provides the intermediate relation explicitly
 |*)
 #[global] Tactic Notation "upto_bind" :=
   __eupto_bind_equ || __eupto_bind_sbisim.

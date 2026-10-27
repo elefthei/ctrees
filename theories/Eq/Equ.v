@@ -82,24 +82,21 @@ pattern-matching is not allowed on [ctree].
 End equ.
 
 (*|
-The relation itself, defined as the greatest fixed-point of [fequ].
-Through this development, we use the [coinduction] package developed
-by Damien Pous to define and reason about coinductive relations.
-The approach is based on the so-called "companion", described in
-the paper "Coinduction All the Way Up" (Pous, LICS'16).
+The relation itself is the greatest fixed point [gfp (fequ RR)], defined through
+the final chain. We use Damien Pous's [coinduction] package to define and reason
+about these coinductive relations.
 
-The greastest fixed-point is defined by the construction [gfp].
-It gives access to the following tactics:
-- [coinduction S CIH] initiates a coinductive proof;
-- [step in H] unfold in [H] the [gfp], exposing here for instance
+The greatest fixed point gives access to the following tactics:
+- [coinduction R CIH] introduces [R : Chain (fequ RR)], a coinduction hypothesis
+over [elem R], and a goal at the successor stage;
+- [step in H] unfolds the [gfp] in [H], exposing here for instance
 [equF], allowing for an inversion to be performed;
-- [step] unfolds in the goal the [gfp], exposing [equF], so that
+- [step] unfolds the [gfp] in the goal, exposing [equF], so that
 one can play the game once. Note that formally speaking, this
 corresponds to reasoning "up-to fequ".
-- additionnaly, the companion provides extensive support for
-up-to reasoning: any function [f] proved to be below the companion,
-denoted [t], is accessible during a proof by coinduction.
 
+Enhancements are properties preserved at successor stages and therefore at
+every chain element by tower induction.
 |*)
 
 Definition equ {E B R1 R2} R := (gfp (@fequ E B R1 R2 R)).
@@ -163,15 +160,9 @@ and coinduction libraries (we fix the type at which we'll use [eq]).
   Definition seq: relation (ctree E B R) := eq.
 
 (*|
-[eq] is a post-fixpoint, thus [const eq] is below [t]
-These kind of lemmas are proofs of validity of up-to reasoning
-principles: [t_equ RR] is the companion of the monotone function
-[fequ RR]. By proving that the function (on relations over ctrees)
-[const seq] (i.e. [fun R => eq]) is below the companion, it is proved
-to be a valid enhancement, and hence can be used at any point during
-a coinductive proof.
-Here concretely, bisimulation candidates don't ever need
-to be closed by reflexivity in effect: the companion is always reflexive.
+For [C : Chain (fequ RR)], [elem C] is reflexive whenever [RR] is reflexive.
+This property is preserved at successor stages and follows for every chain
+element by tower induction.
 |*)
   Lemma refl_t {RRR: Reflexive RR} {C: Chain (fequ RR)}: Reflexive (elem C).
   Proof.
@@ -181,7 +172,7 @@ to be closed by reflexivity in effect: the companion is always reflexive.
   Qed.
 
 (*|
-[converse] is compatible: up-to symmetry is valid
+For [C : Chain (fequ RR)], [elem C] is symmetric whenever [RR] is symmetric.
 |*)
   Lemma converse_t {RRS: Symmetric RR} {C: Chain (fequ RR)}: Symmetric (elem C).
   Proof.
@@ -192,7 +183,8 @@ to be closed by reflexivity in effect: the companion is always reflexive.
 
   Hint Constructors equb: core.
 (*|
-[squaring] is compatible: up-to transitivity is valid
+For [C : Chain (fequ RR)], [elem C] is transitive whenever [RR] is reflexive
+and transitive.
 |*)
   Lemma square_t {RRR: Reflexive RR} {RRT: Transitive RR} {C: Chain (fequ RR)}: Transitive (elem C).
   Proof.
@@ -213,10 +205,8 @@ to be closed by reflexivity in effect: the companion is always reflexive.
   Qed.
 
 (*|
-Having [const eq], [converse] and [square] below the companion entails respectively
-that the companion, at all point, is reflexive, symmetric, transitive.
-The companion library directly provide these results for bisimilarity, [t R], [b (t R)]
-and [T f R].
+Together, [refl_t], [converse_t], and [square_t] make [elem C] an equivalence
+for every [C : Chain (fequ RR)] whenever [RR] is an equivalence.
 |*)
   #[global] Instance Equivalence_et `{Equivalence _ RR} {C: Chain (fequ RR)}: Equivalence (elem C).
   Proof. constructor. apply refl_t. apply converse_t. apply square_t. Qed.
@@ -393,8 +383,9 @@ equ eq       ==> going (equ eq)  observe
 ∀(equ eq)    ==> going (equ eq)  BrF
 ∀(equ eq)    ==> going (equ eq)  VisF
 observing eq --> equ eq
-going(equ)   ==> eq ==> fimpl    equb eq (t_equ eq r)
-eq ==> going(equ)   ==> fimpl    equb eq (t_equ eq r)
+For [R : Chain (fequ eq)]:
+going(equ)   ==> eq ==> fimpl    equb eq (elem R)
+eq ==> going(equ)   ==> fimpl    equb eq (elem R)
 leq ==> leq                      equ
 weq ==> weq                      equ
 |*)
@@ -531,24 +522,19 @@ Qed.
 (*|
 Up-to bind principle
 ~~~~~~~~~~~~~~~~~~~~
-Consider two computations explicitely built as sequences
+Consider two computations explicitly built as sequences
 [t >>= k] and [u >>= l]. When trying to prove that they are
-bisimilar via a coinductive proof, one is faced with a goal
-of the shape:
-[t_equ RR r (t >>= k) (u >>= l)]
-One can of course case analysis on the structure of [t] and [u]
+bisimilar by coinduction, one is faced with a goal of the shape
+[elem R (t >>= k) (u >>= l)] for [R : Chain (fequ RR)].
+One can of course case analyze the structure of [t] and [u]
 to make progress in the proof.
 But if we know from another source that [t ≅ u], we would like
-to be able to simply "match" these prefixes, and continue the
-coinductive proof over the continuations.
-Such a reasoning is dubbed "up-to bind" reasoning, which we
-prove sound in the following.
+to simply match these prefixes and continue the coinductive proof
+over the continuations.
 
-More formally, this corresponds as always to establishing that
-the appropriate function is a valid enhancement. The function
-in question here is:
-f R = {(bind t k, bind u l) | equ SS t u /\ forall x y, SS x y -> R (k x) (l x)}
-
+The up-to-bind principle below proves that every chain element is closed under
+the heterogeneous bind construction:
+[equ SS t u /\ forall x y, SS x y -> elem R (k x) (l y)].
 |*)
 Section bind.
 
@@ -570,8 +556,6 @@ Heterogeneous [pair], todo move to coinduction library
 
   Section Bind_ctx.
 
-    (* TODO: Comment *)
-    (* TODO: Can we define the underlying generic closure in the style of the old [bind_ctx]? *)
     Lemma equ_bind_chain_gen
       {E B: Type -> Type} {X X' Y Y': Type} (SS : X -> X' -> Prop) (RR : Y -> Y' -> Prop)
       {R : Chain (@fequ E B Y Y' RR)} :
@@ -622,12 +606,6 @@ Heterogeneous [pair], todo move to coinduction library
 
   End Bind_ctx.
 
-(*|
-Specialization of [bind_ctx] to the [equ]-based closure we are
-looking for, and the proof of validity of the principle. As
-always with the companion, we prove that it is valid by proving
-that it si below the companion.
-|*)
 End bind.
 
 (*|
@@ -663,9 +641,8 @@ Qed.
 (*|
 Up-to [equ eq] bisimulations
 ----------------------------
-The transitivity of the [et R] gives us "equ bisimulation up-to equ". Looking forward,
-in order to establish "up-to equ" principles for other bisimulations, we define here the
-associated enhancing function.
+The closure of chain elements proved above gives "equ bisimulation up-to equ".
+For other bisimulations, we define the corresponding enhancing function here.
 |*)
 
 (*|

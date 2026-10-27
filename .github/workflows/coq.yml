@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - fix/universe-check
   pull_request:
     branches:
       - '**'

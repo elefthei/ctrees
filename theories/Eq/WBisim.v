@@ -245,8 +245,8 @@ establish [wbisim]'s transitivity for that.
   Qed.
 
 (*|
-Since [wt R] contains [wbisim] that contains [sbisim] which is known to be reflexive,
-it is reflexive as well
+For every [R : Chain wb], [elem R] contains [wbisim], hence [sbisim], and is
+therefore reflexive.
 |*)
   #[global] Instance refl_t {c: Chain wb}: Reflexive (elem c).
   Proof.
@@ -512,8 +512,10 @@ Contrary to what happens with [sbisim], weak bisimulation ignores both kinds of 
     Qed.
 
 (*|
-Disproving the transitivity of [wt R]
--------------------------------------
+Disproving transitivity of arbitrary chain elements
+----------------------------------------------------
+An arbitrary [elem R] for [R : Chain wb] must not receive a blanket
+transitivity or equivalence instance.
 |*)
 
     Lemma not_Transitive_wt Z: X -> Z -> E Z -> ~ forall (R : Chain wb), Transitive (elem R).

@@ -271,8 +271,10 @@ Section bind.
     (L : hrel (@label E) (@label F)) (R0 : rel X Y).
 
 (*|
-Specialization of [bind_ctx] to a function acting with [cssim] on the bound value,
-and with the argument (pointwise) on the continuation.
+[bind_chain_gen] closes each [R : Chain css] element under bind: prefixes are
+related by [cssim RR], and [R0]-related continuations satisfy both [elem R]
+and progress [exists l t', trans l (k x) t']. The existing
+[is_update_val_rel] and [Respects_val] premises are retained.
 |*)
   Lemma bind_chain_gen
     (RR : rel (label E) (label F))

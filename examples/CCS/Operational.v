@@ -101,12 +101,4 @@ Next Obligation. cbv. firstorder. Qed.
 Notation b := (cap s (comp converse (comp s converse))).
 
 Definition bisim := (gfp b: hrel _ _).
-(* Notation "p ~ q" := (gfp b p q) (at level 70). *)
-(* Notation t := (t b). *)
-(* Notation T := (T b). *)
-(* Notation bt := (bt b). *)
-(* Notation bT := (bT b). *)
-(* (** notations  for easing readability in proofs by enhanced coinduction *) *)
-(* Notation "x [~] y" := (t _ x y) (at level 79). *)
-(* Notation "x {~} y" := (bt _ x y) (at level 79). *)
 
