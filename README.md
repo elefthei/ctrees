@@ -52,12 +52,3 @@ Skip the repository-addition command if `rocq-released` is already configured.
 The official `rocq-coinduction.1.22` release provides `Coinduction.all` and the
 tower API used by CTree.
 
-## Universe checking
-
-Universe checking remains enabled throughout the library. The former
-inconsistency came from monomorphic universe instances that identified event
-and branch indices with the higher universes needed by nested choice trees,
-state transformers, and interpreters. These declarations now keep their
-universe levels independent and polymorphic.
-
-
